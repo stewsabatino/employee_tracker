@@ -32,6 +32,80 @@ const promptMessages = {
     exit: "Exit"
 };
 
+
+function viewAllEmployees() {
+    console.log('Feature not deployed')
+    prompt()
+}
+
+function viewAllRoles() {
+    db.query('SELECT * FROM roles', function (err, results) {
+        console.table(results);
+    })
+    prompt()
+}
+
+function viewAllDepartments() {
+    db.query('SELECT * FROM department', function (err, results) {
+        console.table(results);
+    })
+    prompt()
+}
+
+function addDepartment() {
+    inquirer.prompt([
+            {
+            name: "addDepartment",
+            type: "input",
+            message: "What is the name of the department?"
+            }
+        ])
+        .then(data => {db.query(`INSERT INTO department (id, name) VALUES(${data.addDepartment})`)
+        console.log('Department has been added!');
+        prompt();
+    })
+}
+
+function addRole() {
+    console.log('Feature not deployed')
+    inquirer.prompt([
+        {
+            name: "roleName",
+            type: "input",
+            message: "What is the name of the role would you like to add?"
+        },
+        {
+            name: "roleSalary",
+            type: "input",
+            message: "What salary will this role have?"
+        },
+        {
+            name: "roleDepartment",
+            type: "input",
+            message: "What department will this role be in?"
+        }
+    ])
+    .then(data => {
+        db.query(`INSERT INTO roles (title, salary, department_id) VALUES (${data.roleName}, ${data.roleSalary}, ${data.roleDepartment})`)
+        prompt()
+    })
+}
+
+function addEmployee() {
+    console.log('Feature not deployed')
+    prompt()
+}
+
+function updateEmployee() {
+    console.log('Feature not deployed')
+    prompt()
+}
+
+function removeEmployee() {
+    console.log('Feature not deployed')
+    prompt()
+}
+
 function prompt() {
     inquirer 
         .prompt({
@@ -82,58 +156,6 @@ function prompt() {
                     break;
             }
         });
-}
-
-function viewAllEmployees() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function viewAllRoles() {
-    db.query('SELECT * FROM roles', function (err, results) {
-        console.table(results);
-    })
-    prompt()
-}
-
-function viewAllDepartments() {
-    db.query('SELECT * FROM department', function (err, results) {
-        console.table(results);
-    })
-    prompt()
-}
-
-function addDepartment() {
-        const answer = inquirer.prompt([
-            {
-            name: "departmentName",
-            type: "input",
-            message: "What is the name of the department?"
-            }
-        ])
-        db.query(`INSERT INTO department (name) VALUES(${answer.departmentName})`)
-        console.log('Department has been added!');
-        prompt();
-}
-
-function addRole() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function addEmployee() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function updateEmployee() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function removeEmployee() {
-    console.log('Feature not deployed')
-    prompt()
 }
 
 prompt()
