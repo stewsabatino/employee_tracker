@@ -3,13 +3,6 @@ const inquirer = require('inquirer');
 const express = require('express')
 const cTable = require('console.table')
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-
 const db = mysql.createConnection(
     {
     host: 'localhost',
@@ -145,7 +138,27 @@ function addEmployee() {
 
 function updateEmployee() {
     console.log('Feature not deployed')
-    prompt()
+    inquirer.prompt([
+        {
+            name: "employee",
+            type: "input",
+            message: "Which employee by ID would you like to update?"
+        }, {
+            name: "value",
+            type: "list",
+            message: "What would you like to update?",
+            choices: ["first_name", "last_name", "role_id", "manager_id"]
+        }, {
+            name: "update",
+            type: "input",
+            message: "What is the new value?"
+        }
+    ])
+    .then(data => {
+        console.log(data)
+        // db.query(`UPDATE employee SET ?`)
+        prompt()
+    })
 }
 
 function removeEmployee() {
