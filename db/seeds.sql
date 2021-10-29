@@ -18,14 +18,14 @@ VALUES
 
 INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
 VALUES
-    (001, "Jackie", "Chiles", 7, NULL),
-    (002, "Cosmo", "Kramer", 8, 1),
-    (003, "Frank", "Costanza", 3, NULL),
-    (004, "Lloyd", "Braun", 4, 3),
-    (005, "Justin", "Pitt", 5, NULL),
-    (006, "Tim", "Whatley", 6, 5),
-    (007, "Jacopo", "Peterman", 1, NULL),
-    (008, "Matt", "Wilhelm", 2, 7);
+    (1, "Jackie", "Chiles", 7, NULL),
+    (2, "Cosmo", "Kramer", 8, 1),
+    (3, "Frank", "Costanza", 3, NULL),
+    (4, "Lloyd", "Braun", 4, 3),
+    (5, "Justin", "Pitt", 5, NULL),
+    (6, "Tim", "Whatley", 6, 5),
+    (7, "Jacopo", "Peterman", 1, NULL),
+    (8, "Matt", "Wilhelm", 2, 7);
 
 SELECT * FROM department;
 SELECT * FROM roles;

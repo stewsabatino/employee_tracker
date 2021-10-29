@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS roles;
 CREATE TABLE roles (
     id INT AUTO_INCREMENT NOT NULL,
     title VARCHAR(40),
-    salary INT,
+    salary DECIMAL,
     department_id INT, 
     PRIMARY KEY (id),
     FOREIGN KEY (department_id)
