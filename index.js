@@ -1,14 +1,13 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const express = require('express')
 const cTable = require('console.table')
 
 const db = mysql.createConnection(
     {
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'company_db'
+        host: 'localhost',
+        user: 'root',
+        password: 'password',
+        database: 'company_db'
     },
     console.log('Connected to the company_db database.')
 );
@@ -30,12 +29,20 @@ const promptMessages = {
 
 
 function viewAllEmployees() {
-    console.log('Feature not deployed')
-    prompt()
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name, roles.salary, CONCAT(manager.first_name, " ", manager.last_name) manager_name
+    FROM employee 
+    LEFT JOIN roles on employee.role_id = roles.id
+    LEFT JOIN department on roles.department_id = department.id
+    LEFT JOIN employee manager on employee.manager_id = manager.id`, function (err, results) {
+        console.table(results);
+        prompt()
+    })
 }
 
 function viewAllRoles() {
-    db.query('SELECT * FROM roles', function (err, results) {
+    db.query(`SELECT roles.id, roles.title, roles.salary, department.name
+    FROM roles
+    LEFT JOIN department on roles.department_id = department.id`, function (err, results) {
         console.table(results);
         prompt()
     })
@@ -65,99 +72,139 @@ function ViewByManager() {
 
 function addDepartment() {
     inquirer.prompt([
-            {
+        {
             name: "addDepartment",
             type: "input",
             message: "What is the name of the department?"
-            }
-        ])
+        }
+    ])
         .then(data => {
-            db.query(`INSERT INTO department SET ?`, {name: data.addDepartment}, (err, data) => 
-            {
-            console.log('Department has been added!');
-            prompt();
+            db.query(`INSERT INTO department SET ?`, { name: data.addDepartment }, (err, data) => {
+                console.log('Department has been added!');
+                prompt();
             })
         })
 }
 
 function addRole() {
-    inquirer.prompt([
-        {
-            name: "roleName",
-            type: "input",
-            message: "What is the name of the role would you like to add?"
-        },
-        {
-            name: "roleSalary",
-            type: "input",
-            message: "What salary will this role have?"
-        },
-        {
-            name: "roleDepartment",
-            type: "input",
-            message: "What department ID will this role be in?"
-        }
-    ])
-    .then(data => {
-        db.query(`INSERT INTO roles SET ?`, {title: data.roleName, salary: data.roleSalary, department_id: data.roleDepartment}, (err, data) => 
-        {
-            console.log("Role has been added!");
-            prompt();
+    db.query('SELECT * FROM department', (err, departmentData) => {
+        const departments = departmentData.map(department => {
+            return {
+                name: department.name,
+                value: department.id
+            }
         })
+        inquirer.prompt([
+            {
+                name: "roleName",
+                type: "input",
+                message: "What is the name of the role would you like to add?"
+            },
+            {
+                name: "roleSalary",
+                type: "input",
+                message: "What salary will this role have?"
+            },
+            {
+                name: "roleDepartment",
+                type: "list",
+                message: "What department will this role be in?",
+                choices: departments
+            }
+        ])
+            .then(data => {
+                db.query(`INSERT INTO roles SET ?`, { title: data.roleName, salary: data.roleSalary, department_id: data.roleDepartment }, (err, data) => {
+                    console.log("Role has been added!");
+                    prompt();
+                })
+            })
     })
 }
 
 function addEmployee() {
-    inquirer.prompt([
-        {
-            name: "firstName",
-            type: "input",
-            message: "What is the first name of the employee?"
-        }, {
-            name: "lastName",
-            type: "input",
-            message: "What is the last name of the employee?"
-        }, {
-            name: "roleId",
-            type: "input",
-            message: "What is the ID of their role?"
-        }, {
-            name: "managerId",
-            type: "input",
-            message: "What is the employee ID of their manager?"
-        }
-    ])
-    .then(data => {
-        db.query(`Insert INTO employee SET ?`, {first_name: data.firstName, last_name: data.lastName, role_id: data.roleId, manager_id: data.managerId}, (err, data) => 
-        {
-            console.log("Added new Employee!");
-            prompt();
+    db.query("SELECT * FROM employee", function (err, employeeData) {
+        const employees = employeeData.map(employee => {
+            return {
+                name: employee.first_name + " " + employee.last_name,
+                value: employee.id
+            }
+        })
+        console.log(employees)
+        db.query("SELECT * FROM roles", function (err, roleData) {
+            const roles = roleData.map(role => {
+                return {
+                    name: role.title,
+                    value: role.id
+                }
+            })
+            inquirer.prompt([
+                {
+                    name: "firstName",
+                    type: "input",
+                    message: "What is the first name of the employee?"
+                }, {
+                    name: "lastName",
+                    type: "input",
+                    message: "What is the last name of the employee?"
+                }, {
+                    name: "roleId",
+                    type: "list",
+                    message: "What is the ID of their role?",
+                    choices: roles
+                }, {
+                    name: "managerId",
+                    type: "list",
+                    message: "What is the employee ID of their manager?",
+                    choices: employees
+                }
+            ])
+                .then(data => {
+                    db.query(`Insert INTO employee SET ?`, { first_name: data.firstName, last_name: data.lastName, role_id: data.roleId, manager_id: data.managerId }, (err, data) => {
+                        console.log("Added new Employee!");
+                        prompt();
+                    })
+                })
         })
     })
+
 }
 
 function updateEmployee() {
-    console.log('Feature not deployed')
-    inquirer.prompt([
-        {
-            name: "employee",
-            type: "input",
-            message: "Which employee by ID would you like to update?"
-        }, {
-            name: "value",
-            type: "list",
-            message: "What would you like to update?",
-            choices: ["first_name", "last_name", "role_id", "manager_id"]
-        }, {
-            name: "update",
-            type: "input",
-            message: "What is the new value?"
-        }
-    ])
-    .then(data => {
-        console.log(data)
-        // db.query(`UPDATE employee SET ?`)
-        prompt()
+    db.query("SELECT * FROM employee", function (err, employeeData) {
+        const employees = employeeData.map(employee => {
+            return {
+                name: employee.first_name + " " + employee.last_name,
+                value: employee.id
+            }
+        })
+        db.query("SELECT * FROM roles", function (err, roleData) {
+            const roles = roleData.map(role => {
+                return {
+                    name: role.title,
+                    value: role.id
+                }
+            })
+            inquirer.prompt([
+                {
+                    name: "employee",
+                    type: "list",
+                    message: "Which employee by ID would you like to update?",
+                    choices: employees
+                }, {
+                    name: "role",
+                    type: "list",
+                    message: "Update to new role",
+                    choices: roles
+                }
+            ])
+                .then(data => {
+                    console.log(data)
+                    db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [data.role, data.employee], (err, data) => {
+                        console.log('Employee has been updated')
+                        prompt()
+                    })
+                })
+        })
     })
 }
 
@@ -167,7 +214,7 @@ function removeEmployee() {
 }
 
 function prompt() {
-    inquirer 
+    inquirer
         .prompt({
             name: 'action',
             type: 'list',
