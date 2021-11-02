@@ -55,20 +55,6 @@ function viewAllDepartments() {
     })
 }
 
-function viewByRole() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function viewByDepartment() {
-    console.log('Feature not deployed')
-    prompt()
-}
-
-function ViewByManager() {
-    console.log('Feature not deployed')
-    prompt()
-}
 
 function addDepartment() {
     inquirer.prompt([
@@ -223,9 +209,6 @@ function prompt() {
                 promptMessages.viewAllEmployees,
                 promptMessages.viewAllRoles,
                 promptMessages.viewAllDepartments,
-                promptMessages.viewByRole,
-                promptMessages.viewByDepartment,
-                promptMessages.viewByManager,
                 promptMessages.addDepartment,
                 promptMessages.addRole,
                 promptMessages.addEmployee,
