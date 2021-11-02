@@ -26,6 +26,9 @@ I built this app to be able to see my employees data more efficiently.
 I can now go into one application and view employee data. I can view departments, managers, salaries and roles of all my employees. 
 I learned how to use node js, mysql to create databases and tables. I also learned how to access these databases through javascript.
 
+
+Video Link: https://drive.google.com/file/d/1VJ-gClTXzEoGT2eQexlGTuRB3P5hRhqb/view?usp=sharing
+
 * mysql creating database and tables
 ```
 DROP DATABASE IF EXISTS company_db;
